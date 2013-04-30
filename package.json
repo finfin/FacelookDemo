@@ -1,0 +1,24 @@
+{
+  "name": "PostingAppDemo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node lib/app.js"
+  },
+  "dependencies": {
+    "express": "*",
+    "mongodb": "*",
+    "passport": "*",
+    "passport-local": "*",
+    "mongoose": "*",
+    "bcrypt": "*",
+  	"chai": "*",
+  	"mocha": "*",
+    "async": "*",
+    "source-map-support": "*",
+    "pkginfo": "*",
+    "nodemailer": "*",
+    "underscore": "*"
+  }
+}
+

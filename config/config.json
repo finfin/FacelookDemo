@@ -1,0 +1,27 @@
+{
+	"development": {
+		"WEB_PORT": 4000,
+		"API_PORT": 4000,
+		"TEACHER_PORT": 3000,
+		"STUDENT_PORT": 3001,
+		"DB": {
+			"NAME": "demo",
+			"HOST": "localhost",
+			"PORT": 27017
+		},
+		"FILE_ROOT_DIR": "."
+	},
+	"production": {
+		"WEB_PORT": 80,
+		"API_PORT": 80,
+		"TEACHER_PORT": 3000,
+		"STUDENT_PORT": 3001,
+
+		"DB": {
+			"NAME": "demo",
+			"HOST": "localhost",
+			"PORT": 27017
+		},
+		"FILE_ROOT_DIR": "."
+	}
+}

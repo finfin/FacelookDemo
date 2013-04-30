@@ -1,0 +1,8 @@
+#ignore error log
+*.log
+node_modules/
+lib/
+sftp-config.json
+package.sublime-workspace
+.DS_Store
+.AppleDouble
