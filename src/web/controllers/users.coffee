@@ -55,6 +55,7 @@ exports.signup = (req, res) ->
 		data =
 			name: user.username
 			token: user.token
+			host: req.headers.host
 
 		mailer = new Mailer options, data
 		mailer.send (err, result) ->
