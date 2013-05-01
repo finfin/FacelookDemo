@@ -22,27 +22,6 @@ exports.admin = (req, res) ->
 	res.send "access granted admin!"
 
 
-# POST /login
-#   Use passport.authenticate() as route middleware to authenticate the
-#   request.  If authentication fails, the user will be redirected back to the
-#   login page.  Otherwise, the primary route function function will be called,
-#   which, in this example, will redirect the user to the home page.
-#
-#   curl -v -d "username=bob&password=secret" http://127.0.0.1:3000/login
-#   
-###
-This version has a problem with flash messages
-app.post('/login',
-passport.authenticate('local', { failureRedirect: '/login', failureFlash: true }),
-function(req, res) {
-res.redirect('/');
-});
-###
-
-# POST /login
-#   This is an alternative implementation that uses a custom callback to
-#   acheive the same functionality.
-
 
 exports.signup = (req, res) ->
 	user = new User(
@@ -119,42 +98,3 @@ exports.validateToken = (req, res) ->
 exports.logout = (req, res, next) ->
 	res.clearCookie 'apikey'
 	res.end()
-
-###exports.logout = (req, res) ->
-	req.logout()
-	res.redirect "/"
-
-exports.listUser = (req, res) ->
-	util.log helper.parseProjection(req.query)
-	User.find {}, null, helper.parseProjection(req.query), (err, users) ->
-		res.render "user/list_user", 
-			title: "User List"
-			login_user: req.user
-			users: users
-
-exports.editUser = (req, res) ->
-	userID = req.params.id
-	User.findById userID, (err, user) ->
-		res.render "user/edit_user", 
-			title: "編輯使用者"
-			login_user: req.user
-			user: user
-
-exports.updateUser = (req, res) ->
-	userId = req.params.id
-
-	user = new User req.body
-
-	userData = user.toObject()
-	delete userData._id
-
-	User.update {_id: req.params.id}, userData, (err, updatedUser) ->
-		return res.send 500, "Error while removing user"
-		res.send updatedUser
-
-exports.deleteUser = (req, res) ->
-	userID = req.params.id
-	User.findByIdAndRemove userID, (err, user) ->
-		return res.send 500, "Error while removing user"
-		res.send 200
-###

@@ -33,7 +33,6 @@ userSchema = new Schema(
 	token:
 		type: String
 		required: false
-		unique: true
 
 	enabled:
 		type: Boolean

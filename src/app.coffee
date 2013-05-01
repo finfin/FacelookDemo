@@ -23,10 +23,6 @@ mongoose.connect uristring, mongoOptions, (err, res) ->
 		console.log "Successfully connected to: #{uristring}"
 
 
-#cleanup before exit
-process.on 'exit', ->
-	util.log "Closing DB..."
-	mongoose.connection.close()
 
 # Bootstrap models
 models_path = "#{__dirname}/web/models"
@@ -38,9 +34,7 @@ fs.readdirSync(models_path).forEach (file) ->
 pass				= require './web/util/pass'
 app					= express()
 
-#WEB Server
-app.set('views', "#{__dirname}/../views")
-app.set('view engine', 'jade')
+#Server
 app.use(express.favicon())
 app.use(express.logger())
 app.use(express.cookieParser())
@@ -58,8 +52,6 @@ app.use((err, req, res, next) ->
 )
 
 # require controllers
-#routes				= require './web/controllers/routes'
-#views				= require './web/controllers/views'
 user				= require './web/controllers/users'
 post				= require './web/controllers/posts'
 
@@ -74,6 +66,11 @@ app.post('/api/posts', post.createPost)
 app.delete('/api/posts/:id', post.deletePost)
 app.listen(config.WEB_PORT)
 
+
+#cleanup before exit
+process.on 'exit', ->
+	util.log "Closing DB..."
+	mongoose.connection.close()
 
 process.on 'uncaughtException', (err) ->
 	util.log err

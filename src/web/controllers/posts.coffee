@@ -8,33 +8,6 @@ mongoose			= require 'mongoose'
 Post 			= mongoose.model('Post')
 
 
-###
-# GET /materials
-exports.showMaterial = (req, res) ->
-	#ua = req.headers['user-agent']
-
-	#TODO: error handling
-	#if /like Mac OS X/.test(ua) and /iPad/.test(ua)
-	async.parallel(
-		materials: (callback) ->
-			getMaterials req, (err, results) ->
-				return callback err if err
-
-				callback null, results
-		tags: (callback) ->
-			CourseController.getCourses req, (err, results) ->
-				return callback err if err
-
-				callback null, results
-	, (err, result) ->
-		if err
-			res.send 500, 'Insertion of materials failed'
-			util.log err.stack
-		else
-			res.render('list_material', {title: '檔案列表', materials: result.materials, tags:result.tags, user: req.user})
-	)
-###
-
 # GET /posts/
 exports.listPosts = (req, res) ->
 	getPosts req, (err, results) ->
@@ -44,7 +17,8 @@ exports.listPosts = (req, res) ->
 
 		res.send results
 
-# get materials by tag or get all
+# GET /api/posts
+# get all post
 getPosts = (req, cb) ->
 	util.log util.inspect req.query
 	
@@ -60,41 +34,8 @@ getPosts = (req, cb) ->
 			#res.send result.materials
 	)
 
-
-###
-exports.findMaterial = (req, res) ->
-	materialID = req.params.id
-
-	Material.findById materialID, helper.parseProjection(req.query), (err, material) ->
-		if err
-			util.log err
-			res.send 'Error Getting Requested Material'
-		#download file
-		if req.query.download is 'true'
-			#TODO: encoding filename
-			res.setHeader('Content-disposition', "attachment; filename=#{material.filename}")
-			res.setHeader('Content-type', material.type)
-			file = "#{config.FILE_ROOT_DIR}/files/materials/#{materialID}"
-			util.log "Get File:#{file}"
-
-			#TODO: 把file size存在DB，就不用每次存取檔案資訊
-			#THINK: reading DB/FS, which is faster? any alternatives?
-			fs.stat file, (err, stat) ->
-				if err
-					throw err
-				res.setHeader('Content-Length',stat.size)
-				filestream = fs.createReadStream(file)
-
-				filestream.on 'data', (chunk) ->
-					res.write(chunk)
-				
-				filestream.on 'end', ->
-					res.end()
-		else
-			res.send material
-###
-
-# POST /posts/
+# POST /api/posts/
+# Create new post
 exports.createPost = (req, res) ->
 	console.log("user posting #{req.user._id}")
 	post = new Post(

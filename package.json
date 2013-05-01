@@ -12,13 +12,16 @@
     "passport-local": "*",
     "mongoose": "*",
     "bcrypt": "*",
-  	"chai": "*",
-  	"mocha": "*",
+    "chai": "*",
+    "mocha": "*",
     "async": "*",
     "source-map-support": "*",
     "pkginfo": "*",
     "nodemailer": "*",
     "underscore": "*"
-  }
+  },
+  "engines": {
+    "node": "0.8.x"
+  },
+  "subdomain": "facelook-demo"
 }
-
