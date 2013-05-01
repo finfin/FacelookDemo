@@ -47,7 +47,7 @@ class Emailer
 
 	getHtml: (templateName, data)->
 		#host = config.host
-		data.host = config.host
+		#data.host = config.host
 		templatePath = "./views/emails/#{templateName}.html"
 		templateContent = fs.readFileSync(templatePath, encoding = "utf8")
 		_.template templateContent, data, {interpolate: /\{\{(.+?)\}\}/g}
