@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+
+    <title>reveal.js - The HTML Presentation Framework</title>
+
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+    <!-- For syntax highlighting -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="reveal">
+
+      <!-- Any section element inside of this container is displayed as a slide -->
+      <div class="slides">
+
+        <section>
+          <h1>App Demo</h1>
+          <p>
+            <small>Created by <a href="http://rettamkrad.blogspot.tw/">Fin Chen</a> / <a href="https://www.facebook.com/thingsaboutwebdev">網頁開發雜記</a></small>
+          </p>
+                    <p>
+                        <small>Project Github <a href="https://github.com/finfin/FacelookDemo">NodeJS</a> / <a href="https://github.com/Scentsome/Developer-s-Note">iOS</a></small>
+                    </p>
+        </section>
+
+        <section>
+          <h2>App 功能</h2>
+          <ul><li>使用者帳號註冊</li>
+          <li>帳號登入</li>
+          <li>發表訊息</li>
+          <li>列出所有訊息</li><li>刪除訊息</li></ul>
+          <aside class="notes">
+            Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+          </aside>
+        </section>
+
+        <!-- Example of nested vertical slides -->
+        <section>
+          <section>
+            <h2>使用流程規劃</h2>
+            <ul><li>註冊流程</li><li>登入流程</li><li>留言瀏覽/發表</li></ul>
+          </section>
+          <section>
+            <h2>註冊流程</h2>
+            <ol><li>註冊使用者：輸入帳號密碼</li>
+            <li>資料庫新增一筆未驗證使用者</li>
+            <li>寄送包含驗證碼&amp;驗證網址之email</li>
+            <li>使用者登入後跳出驗證碼輸入框</li></ol>
+          </section>
+          <section>
+            <h2>登入流程</h2>
+            <ol><li>輸入帳號密碼</li>
+            <li>如有錯誤則提示</li>
+            <li>無錯誤，登入</li><li>非驗證帳號登入，跳出驗證碼輸入筐</li></ol>
+          </section>
+          <section>
+            <h2>文章瀏覽/發表</h2>
+            <ol><li>登入後會進入文章列表畫面</li>
+              <li>下方文字輸入框可以輸入並發表留言</li>
+            <li>瀏覽/更新訊息</li></ol>
+          </section>
+        </section>
+
+        <section> 
+          <section>
+            <h2>資源需求</h2>
+            <ul><li>使用者</li><li>留言</li></ul>
+          </section>
+          <section>
+            <h2>API</h2>
+            <ul>
+              <li>GET /api/posts</li>
+              <li>POST /api/posts</li>
+              <li>DELETE /api/posts/:id</li>
+            </ul>
+          </section>
+          
+        </section>
+
+        <section>
+          <section>
+            <h2>機制需求</h2>
+            <ul><li>資料庫存取</li>
+            <li>伺服器架設</li>
+            <li>使用者驗證/授權</li>
+              <li>產生/確認驗證碼</li>
+            <li>認證信寄發</li>
+            </ul>
+          </section>
+          <section>
+            <h2>相關機制API</h2>
+            <ul>
+              <li>POST /signup</li>
+              <li>GET /login</li>
+              <li>GET /validateToken</li>
+              <li>GET /logout</li>
+            </ul>
+          </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>MVC架構</h2>
+            <img src="image/mvc.gif" alt="MVC architecture">
+          </section>
+          <section>
+            <h2>Model</h2>
+            <ul>
+              <li>Users</li>
+              <li>Posts</li>
+            </ul>
+          </section>
+          <section>
+            <h2>View</h2>
+            <p>View在mobile端，以JSON傳遞資訊</p>
+          </section>
+          <section>
+            <h2>Controller</h2>
+            <ul>
+              <li>Users</li>
+              <li>Posts</li>
+            </ul>
+          </section>
+                    <section>
+                        <h2>目錄結構</h2>
+                        <img src="image/directory-structure.png" alt="DS">
+                    </section>
+        </section>
+
+        <section>
+          <section>
+            <h2>Express App Setup</h2>
+            <pre><code class="javascript" data-trim>
+express = require('express');
+app = express();
+app.use(express.cookieParser());
+app.use(express.bodyParser());
+app.use(app.router);
+
+app.post('/signup', user.signup);
+app.get('/login', user.login);
+app.get('/validateToken', user.validateToken);
+app.get('/logout', user.logout);
+app.get('/api/posts', post.listPosts);
+app.post('/api/posts', post.createPost);
+app["delete"]('/api/posts/:id', post.deletePost);
+
+app.listen(config.WEB_PORT);
+
+            </code></pre>
+          </section>
+          <section>
+            <h2>User Model Setup</h2>
+            <pre><code class="javascript" data-trim>
+var ObjectId, SALT_WORK_FACTOR, Schema, bcrypt, config, env, generateAPIKey, 
+    generateRandomToken, generateValidationToken, mongoose, userModel, 
+    userSchema;
+
+mongoose = require('mongoose');
+
+Schema = mongoose.Schema;
+ObjectId = Schema.ObjectId;
+
+userSchema = new Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  admin: {
+    type: Boolean,
+    required: true
+  },
+  apikey: {
+    type: String,
+    required: false,
+    unique: true
+  },
+  token: {
+    type: String,
+    required: false
+  },
+  enabled: {
+    type: Boolean,
+    required: true
+  }
+});
+
+userSchema.pre('save', function(next) {
+  // 1. hash password
+  // 2. if user is not validated, generate token
+});
+
+userSchema.methods.comparePassword = function(candidatePassword, cb) {
+  // this method is for authentication
+};
+
+
+userModel = mongoose.model('User', userSchema, 'Users');
+
+            </code></pre>
+          </section>
+                    <section>
+                        <h2>Post Model Setup</h2>
+                        <pre><code class="javascript">
+var ObjectId, Schema, materialModel, mongoose, postSchema;
+
+mongoose = require('mongoose');
+
+Schema = mongoose.Schema;
+ObjectId = Schema.ObjectId;
+
+postSchema = new Schema({
+  text: String,
+  owner: {
+    type: Schema.Types.ObjectId,
+    required: true
+  },
+  modifiedTime: Date
+});
+
+materialModel = mongoose.model('Post', postSchema, 'Posts');
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>User Controller Setup</h2>
+                        <pre><code class="javascript">
+exports.signup = function(req, res) {
+  var user;
+
+  user = new User({
+    username: req.body.username,
+    password: req.body.password,
+    admin: false,
+    enabled: false
+  });
+  return user.save(function(err, user) {
+    var data, mailer, options;
+
+    if (err) {
+      console.log(err);
+      if (err.code === 11000) {
+        return res.send(409);
+      } else {
+        return res.send(500);
+      }
+    }
+    res.cookie('apikey', user.apikey, {
+      maxAge: 86409000,
+      httpOnly: true
+    });
+    res.statusCode = 506;
+    res.end();
+
+    // send mail after user created, <a href="#/nodemailer">Link</a>
+  });
+};
+
+exports.login = function(req, res, next) {
+  // ...passport authentication, <a href="#/passport-login">Link</a>
+};
+
+exports.validateToken = function(req, res) {
+  var apikey, token;
+
+  apikey = req.cookies.apikey;
+  token = req.query.token;
+  console.log(apikey, token);
+  return User.findOneAndUpdate({
+    token: token
+  }, {
+    enabled: true,
+    token: null
+  }, function(err, user) {
+    console.log("user: " + user);
+    if (err) {
+      return res.send(500);
+    }
+    if (!user) {
+      return res.send(403);
+    }
+    return res.send(200);
+  });
+};
+
+exports.logout = function(req, res, next) {
+  res.clearCookie('apikey');
+  return res.end();
+};
+
+
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>Post Controller Setup</h2>
+                        <pre><code class="javascript">
+util = require('util');
+async = require('async');
+
+mongoose = require('mongoose');
+Post = mongoose.model('Post');
+
+exports.listPosts = function(req, res) {
+  return getPosts(req, function(err, results) {
+    if (err) {
+      return res.send(500);
+    }
+    return res.send(results);
+  });
+};
+
+getPosts = function(req, cb) {
+  Post.find({}, function(err, posts) {
+    cb(err, posts);
+  });
+};
+
+exports.createPost = function(req, res) {
+  var post;
+
+  post = new Post({
+    text: req.body.text,
+    owner: mongoose.Types.ObjectId("" + req.user._id),
+    modifiedTime: new Date()
+  });
+  return post.save(function(err, post) {
+    if (err) {
+      return res.send(500);
+    }
+    return res.send(post);
+  });
+};
+
+exports.deletePost = function(req, res) {
+  var id;
+
+  id = req.params.id;
+  return Post.findByIdAndRemove(id, function(err, post) {
+    if (err) {
+      return res.send(500);
+    }
+    return res.send(200);
+  });
+};
+
+                        </code></pre>
+                    </section>
+                    <section id="passport-login">
+                        <h2>Passport Setup</h2>
+                        <pre><code class="javascript">
+//app.js
+pass = require('./web/util/pass');
+
+app.use(passport.initialize());
+app.use('/api', pass.authenticateAPIKey);
+
+
+//user.js
+exports.login = function(req, res, next) {
+  return passport.authenticate("local", function(err, user, info) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.send(403);
+    }
+    res.cookie('apikey', user.apikey, {
+      maxAge: 86409000,
+      httpOnly: true
+    });
+    res.statusCode = user.enabled ? 200 : 506;
+    return res.end();
+
+  })(req, res, next);
+};
+
+//pass.js
+exports.authenticateAPIKey = authenticateAPIKey = function(req, res, next) {
+  util.log('autheticating api');
+  return passport.authenticate('localapikey', function(err, user, info) {
+    if (err) {
+      return res.send(500);
+    }
+    if (!user) {
+      return res.send(403);
+    }
+    if (!user.enabled) {
+      return res.send(506);
+    }
+    return req.logIn(user, function(err) {
+      console.log("req.user " + (util.inspect(req.user)));
+      if (err) {
+        return next(err);
+      }
+      return next();
+    });
+  })(req, res, next);
+};
+                        </code></pre>
+                    </section>
+                    <section id="nodemailer">
+                        <h2>Nodemailer Setup</h2>
+                        <pre><code class="javascript">
+// controllers/user.js
+
+options = {
+  to: {
+    email: user.username,
+    name: user.username
+  },
+  subject: "Confirmation mail",
+  template: "confirmation"
+};
+data = {
+  name: user.username,
+  token: user.token,
+  host: req.headers.host
+};
+mailer = new Mailer(options, data);
+return mailer.send(function(err, result) {
+  if (err) {
+    return console.log(err);
+  }
+});
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>Nodemailer Template</h2>
+                        <pre><code class="html">&lt;!-- invite.html --&gt;<br/>&lt;html&gt;<br/>    &lt;head&gt;<br/>       &lt;title&gt;Confirmation Mail&lt;/title&gt;<br/>   &lt;/head&gt;<br/>  &lt;body&gt;<br/>       &lt;p&gt;<br/>          Hi {{name}},<br/>       &lt;/p&gt;<br/>     &lt;p&gt;<br/>          &#x975e;&#x5e38;&#x6b61;&#x8fce;&#x60a8;&#x8a3b;&#x518a;&#x672c;&#x7a0b;&#x5f0f;&#xff0c;&#x8acb;&#x9ede;&#x64ca;&#x4ee5;&#x4e0b;&#x9023;&#x7d50;&#x5553;&#x52d5;&#x60a8;&#x7684;&#x5e33;&#x865f;&#xff1a;&lt;br/&gt;<br/>            &lt;a href=&quot;http://{{host}}/validateToken?token={{token}}&quot;&gt;http://{{host}}/validateToken?token={{token}}&lt;/a&gt; &lt;br/&gt;<br/>            &#x6216;&#x662f;&#x767b;&#x5165;&#x7cfb;&#x7d71;&#x5f8c;&#x8f38;&#x5165;&#x60a8;&#x7684;&#x9a57;&#x8b49;&#x78bc;&#xff1a; {{token}}<br/>     &lt;/p&gt;<br/>     &lt;p&gt;<br/>          App Team<br/>       &lt;/p&gt;<br/>     <br/>   &lt;/body&gt;<br/>&lt;/html&gt;
+                        </code></pre>
+                    </section>
+
+        </section>
+
+        <section>
+                    <section>
+                        <h2>iOS Views</h2>
+                        <ul>
+                            <li>Login View</li>
+                            <li>Signup View</li>
+                            <li>Post Viewer</li>
+                        </ul>
+                    </section>
+          <section>
+                        <h2>Login View</h2>               
+                        <img src="image/login.png" alt="login view">
+                    </section>
+                    <section>
+                        <h2>Signup View</h2>
+                        <img src="image/signup.png" alt="signup view">
+                    </section>
+                    <section>
+                        <h2>Post View</h2>
+                        <img src="image/posts.png" alt="post view">
+                    </section>
+        </section>
+                <section>
+                    <section>
+                        <h2>Login Controller</h2>
+                        <pre><code class="objectivec">
+-(void) remoteLogin{
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    NSURL * url = [NSURL URLWithString:[LocalServer stringByAppendingFormat:@"/login?username=%@&amp;password=%@", self.accountField.text, self.passwordField.text]];
+    
+    NSURLRequest * request = [NSURLRequest requestWithURL:url];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue new] completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
+        NSLog(@"back message");
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        if (data == nil) {
+            NSLog(@"Login error %@", error);
+        }else{
+            NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
+            NSLog(@"status %d", httpResponse.statusCode);
+            NSInteger statusCode = httpResponse.statusCode;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                switch (statusCode) {
+                    case 200:{
+                        self.statusLabel.text = @"Successfully Logged in";
+                        break;
+                    }
+                    case 403:{
+                        self.statusLabel.text = @"Invalid Usernam or Password";
+                        break;
+                    }
+                    case 506:{
+                        self.statusLabel.text = @"Waiting for validation";
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            });
+
+        }
+    }];
+}
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>Signup Controller</h2>
+                        <pre><code class="objectivec">
+-(void) remoteSignUp{
+    NSLog(@"sign up");
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    NSURL *url = [NSURL URLWithString:[LocalServer stringByAppendingString:@"/signup"]];
+    NSMutableURLRequest * postRequest = [NSMutableURLRequest requestWithURL:url];
+    postRequest.HTTPMethod = @"POST";
+    NSDictionary * bodyDict = @{@"username": self.accountField.text, @"password": self.passwordField.text};
+    NSString * paraString = [NSString stringWithFormat:@"username=%@&amp;password=%@",bodyDict[@"username"], bodyDict[@"password"]];
+    postRequest.HTTPBody = [paraString dataUsingEncoding:NSUTF8StringEncoding];
+    [NSURLConnection sendAsynchronousRequest:postRequest queue:[NSOperationQueue new] completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        if (error) {
+            NSLog(@"%@", error);
+        }else{
+            NSHTTPURLResponse * httpResponse = response;
+            NSLog(@"%@", httpResponse.allHeaderFields);
+            NSLog(@"%d", httpResponse.statusCode);
+        }
+        
+    }];
+}
+                        </code></pre>
+                    </section>
+                    <section>
+                        <h2>Validate Account</h2>
+                        <pre><code class="objectivec">
+-(void) remoteValidateAccount:(NSString *) vCode{
+    NSURL * url = [NSURL URLWithString:[LocalServer stringByAppendingFormat:@"/validateToken?token=%@", vCode]];
+    NSURLRequest * request = [NSURLRequest requestWithURL:url];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue new] completionHandler:^(NSURLResponse * response, NSData * data, NSError * error) {
+        NSHTTPURLResponse * httpResponse = (NSHTTPURLResponse *) response;
+        NSLog(@"status %d", httpResponse.statusCode);
+    }];
+    
+}
+                        </code></pre>
+                    </section>
+                </section>
+
+
+
+        <section>
+          <h1>FAQ</h1>
+          <h3>Thank you!!!</h3>
+        </section>
+
+      </div>
+
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+
+    <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        multiplex: {
+            secret: '13674512034863786755',
+            // Example values. Generate your own.
+            id: '2d853e7f326a8295', // Obtained from socket.io server
+            url: 'revealjs.jit.su:80' // Location of socket.io server
+        },
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+          // { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+                    
+                    // other deps
+                    
+        ]
+                
+                
+
+      });
+
+    </script>
+
+  </body>
+</html>
